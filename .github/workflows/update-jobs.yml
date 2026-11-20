@@ -1,0 +1,65 @@
+name: Update job pool
+
+on:
+  schedule:
+    # GitHub cron uses UTC and usually starts runs a few minutes late.
+    # 00:50 UTC = 08:50 Beijing  -> results land around 09:00
+    # 13:50 UTC = 21:50 Beijing  -> results land around 22:00
+    - cron: "50 0 * * *"
+    - cron: "50 13 * * *"
+  workflow_dispatch:        # "Run workflow" button in the Actions tab
+  push:
+    branches: [main]
+    paths:                  # re-run right away when settings or fetcher code change
+      - config.json
+      - fetcher/**
+      - requirements.txt
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-jobs
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch, score and encrypt jobs
+        env:
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          JOOBLE_KEY: ${{ secrets.JOOBLE_KEY }}
+        run: |
+          if [ -z "$SITE_PASSWORD" ]; then
+            echo "::error::The SITE_PASSWORD secret is missing. Add it under Settings > Secrets and variables > Actions (see SETUP.md)."
+            exit 1
+          fi
+          python fetcher/run.py
+
+      - name: Save results
+        run: |
+          git config user.name "job-workstation-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data.enc docs/meta.json
+          git rm --cached --ignore-unmatch docs/data.json
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Update job pool $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase --autostash
+            git push
+          fi
