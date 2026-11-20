@@ -1,0 +1,8 @@
+# Never commit unencrypted job data or local files
+docs/data.json
+Resume/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
