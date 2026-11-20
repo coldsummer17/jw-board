@@ -1,0 +1,4 @@
+requests>=2.31
+beautifulsoup4>=4.12
+cryptography>=42
+python-jobspy>=1.1.70
