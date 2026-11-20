@@ -244,6 +244,7 @@ def main() -> int:
             continue
         final.append(j)
     final.sort(key=lambda x: (-x["fit"], x.get("posted_at") or x.get("first_seen") or ""))
+    new_count = sum(1 for j in final if j.get("first_seen") == run_ts)  # only count new jobs that were kept
 
     payload = {
         "updated_at": run_ts,
