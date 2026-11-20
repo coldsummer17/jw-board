@@ -3,10 +3,10 @@ name: Update job pool
 on:
   schedule:
     # GitHub cron uses UTC and usually starts runs a few minutes late.
-    # 00:50 UTC = 08:50 Beijing  -> results land around 09:00
-    # 13:50 UTC = 21:50 Beijing  -> results land around 22:00
-    - cron: "50 0 * * *"
-    - cron: "50 13 * * *"
+    # 00:30 UTC = 08:30 Beijing  -> results land well before 09:00
+    # 13:30 UTC = 21:30 Beijing  -> results land well before 22:00
+    - cron: "30 0 * * *"
+    - cron: "30 13 * * *"
   workflow_dispatch:        # "Run workflow" button in the Actions tab
   push:
     branches: [main]
