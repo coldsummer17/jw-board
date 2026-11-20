@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Doc Job Workstation</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='8' width='18' height='16' rx='3' fill='%23c2410c'/%3E%3Cpath d='M21 13l8-4v14l-8-4z' fill='%23c2410c'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Lock screen -->
+  <section id="lock" class="lock" hidden>
+    <form id="lock-form" class="lock-card" autocomplete="on">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <h1>Doc Job Workstation</h1>
+      <p class="muted">Enter your workstation password to load the job pool.</p>
+      <input type="text" name="username" autocomplete="username" value="workstation" hidden>
+      <label class="field">
+        <span>Password</span>
+        <input id="pw" type="password" autocomplete="current-password" required autofocus>
+      </label>
+      <label class="check"><input id="remember" type="checkbox" checked> Remember on this device</label>
+      <button class="btn primary" type="submit" id="unlock-btn">Unlock</button>
+      <p id="lock-error" class="error" role="alert"></p>
+    </form>
+  </section>
+
+  <!-- App -->
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <div class="brand-name">Doc Job Workstation</div>
+          <div class="brand-sub" id="updated-line">—</div>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button role="tab" class="tab active" data-tab="jobs">Jobs</button>
+        <button role="tab" class="tab" data-tab="links">Quick links</button>
+        <button role="tab" class="tab" data-tab="sources">Sources</button>
+      </nav>
+      <div class="top-actions">
+        <button class="btn ghost small" id="lock-btn" title="Forget password on this device">Lock</button>
+      </div>
+    </header>
+
+    <div id="banner" class="banner" hidden>
+      <span id="banner-text"></span>
+      <span class="banner-actions">
+        <button class="btn small" id="banner-show-new">Show new jobs</button>
+        <button class="btn ghost small" id="banner-close" aria-label="Dismiss">✕</button>
+      </span>
+    </div>
+    <div id="toast" class="toast" hidden>
+      <span>The workstation just updated with new jobs.</span>
+      <button class="btn small primary" onclick="location.reload()">Reload</button>
+    </div>
+
+    <!-- Jobs tab -->
+    <main id="tab-jobs" class="layout">
+      <aside id="filters" class="filters" aria-label="Filters">
+        <div class="filters-head">
+          <h2>Filters</h2>
+          <button class="btn ghost small" id="reset-filters">Reset</button>
+          <button class="btn ghost small only-mobile" id="close-filters" aria-label="Close filters">✕</button>
+        </div>
+        <div id="filter-body"></div>
+      </aside>
+
+      <section class="results">
+        <div class="toolbar">
+          <button class="btn only-mobile" id="open-filters">Filters <span id="filter-count" class="count"></span></button>
+          <input id="search" class="search" type="search" placeholder="Search title, company, description…">
+          <label class="sort">
+            <span class="muted">Sort</span>
+            <select id="sort"></select>
+          </label>
+        </div>
+        <div class="result-meta">
+          <span id="result-count"></span>
+          <span class="meta-actions">
+            <button class="btn ghost small" id="export-csv">Export CSV</button>
+            <button class="btn ghost small" id="backup-btn" title="Download your Saved/Applied/Dismissed marks and notes">Back up my marks</button>
+            <label class="btn ghost small file-btn" title="Restore marks and notes from a backup file">Restore<input type="file" id="restore-input" accept="application/json" hidden></label>
+          </span>
+        </div>
+        <div id="active-chips" class="chips"></div>
+        <ol id="job-list" class="job-list"></ol>
+        <div class="more-wrap"><button class="btn" id="more-btn" hidden>Show more</button></div>
+        <p id="empty" class="empty" hidden>No jobs match these filters. Try widening the date range or clearing a filter.</p>
+      </section>
+    </main>
+
+    <!-- Quick links tab -->
+    <main id="tab-links" class="page" hidden>
+      <h2>Quick links</h2>
+      <p class="muted">Boards that block automated reading or need a login. Check them directly, or keep a profile there so productions can find you.</p>
+      <div id="links-body" class="link-groups"></div>
+    </main>
+
+    <!-- Sources tab -->
+    <main id="tab-sources" class="page" hidden>
+      <h2>Sources in the last update</h2>
+      <p class="muted">Each update checks every source below. “Fetched” is how many postings the source returned; “Kept” is how many were relevant enough to show. Sources such as Glassdoor and Google sometimes block GitHub's servers and return nothing for a run.</p>
+      <div class="table-wrap"><table class="sources-table" id="sources-table"></table></div>
+    </main>
+  </div>
+
+  <!-- Note dialog -->
+  <dialog id="note-dialog">
+    <form method="dialog" class="note-form">
+      <h3 id="note-title">Note</h3>
+      <textarea id="note-text" rows="6" placeholder="Contacts, rates, deadlines, follow-up dates…"></textarea>
+      <div class="note-actions">
+        <button class="btn ghost" value="cancel">Cancel</button>
+        <button class="btn primary" value="save" id="note-save">Save note</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
