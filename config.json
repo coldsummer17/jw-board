@@ -1,0 +1,815 @@
+{
+  "_comment": "Main settings for the Documentary Job Workstation. Edit this file to change keywords, sources, scoring and filters. After editing, commit/push to GitHub; the next scheduled run uses the new settings.",
+  "keep_days": 60,
+  "min_fit_score": 20,
+  "scoring": {
+    "_comment": "How each job's fit score (0-100) is computed. Each matched term adds its weight; a match in the job title counts double. A job is kept only if its TITLE contains a role word ('role_terms') and the posting has media context ('media_terms' anywhere, or 'video' in the title). 'generic_roles' (producer, director, editor...) need a higher score to qualify. Changes here also re-score jobs already stored.",
+    "role_terms": {
+      "documentary": 25,
+      "docuseries": 25,
+      "non-fiction": 15,
+      "nonfiction": 15,
+      "fixer": 30,
+      "local producer": 25,
+      "field producer": 25,
+      "line producer": 15,
+      "story producer": 15,
+      "producer": 12,
+      "director": 10,
+      "cinematographer": 18,
+      "director of photography": 18,
+      "camera operator": 10,
+      "videographer": 14,
+      "video journalist": 20,
+      "multimedia journalist": 14,
+      "video producer": 14,
+      "video editor": 14,
+      "editor": 6,
+      "post-production": 8,
+      "post production": 8,
+      "shooter": 8,
+      "filmmaker": 15,
+      "film crew": 10,
+      "production coordinator": 8,
+      "production manager": 8,
+      "bureau": 12,
+      "correspondent": 8,
+      "researcher": 6,
+      "shoot": 4,
+      "video": 4,
+      "film": 4,
+      "multimedia production": 15,
+      "multimedia producer": 15,
+      "纪录片": 35,
+      "导演": 15,
+      "制片": 20,
+      "摄影": 15,
+      "剪辑": 15,
+      "外拍": 25,
+      "拍摄": 15
+    },
+    "generic_roles": [
+      "producer",
+      "director",
+      "editor",
+      "researcher",
+      "correspondent",
+      "bureau",
+      "production coordinator",
+      "production manager",
+      "line producer",
+      "shooter",
+      "shoot",
+      "video",
+      "film"
+    ],
+    "media_terms": [
+      "documentary",
+      "docuseries",
+      "film",
+      "filmmaking",
+      "filmmaker",
+      "broadcast",
+      "tv",
+      "television",
+      "newsroom",
+      "journalism",
+      "journalist",
+      "multimedia",
+      "footage",
+      "camera",
+      "cinematography",
+      "cinematographer",
+      "post-production",
+      "post production",
+      "video production",
+      "video producer",
+      "video editor",
+      "videographer",
+      "video journalist",
+      "video content",
+      "storytelling",
+      "production company",
+      "shoot",
+      "shooting",
+      "crew",
+      "on location",
+      "premiere pro",
+      "davinci",
+      "avid",
+      "纪录片",
+      "视频",
+      "影视",
+      "拍摄",
+      "剪辑",
+      "news",
+      "radio",
+      "reporter",
+      "reporting",
+      "editorial",
+      "podcast",
+      "photojournalist",
+      "photography",
+      "media production",
+      "newsletter video"
+    ],
+    "context_terms": {
+      "china": 30,
+      "chinese": 25,
+      "mandarin": 35,
+      "cantonese": 15,
+      "bilingual": 12,
+      "beijing": 25,
+      "shanghai": 25,
+      "shenzhen": 20,
+      "guangzhou": 20,
+      "chengdu": 20,
+      "hong kong": 18,
+      "taiwan": 15,
+      "taipei": 15,
+      "tibet": 20,
+      "tibetan": 20,
+      "nepal": 12,
+      "asia": 12,
+      "apac": 12,
+      "asia-pacific": 12,
+      "east asia": 15,
+      "international": 6,
+      "overseas": 10,
+      "travel": 4,
+      "foreign": 6,
+      "global": 3,
+      "海外": 30,
+      "translator": 6,
+      "interpreter": 8
+    },
+    "_negative_comment": "Penalties apply only when the word is in the job TITLE.",
+    "negative_terms": {
+      "software engineer": -40,
+      "engineer": -25,
+      "engineering": -20,
+      "developer": -25,
+      "data": -20,
+      "analytics": -25,
+      "sales": -25,
+      "account executive": -30,
+      "account director": -30,
+      "client": -15,
+      "partnerships": -20,
+      "marketing manager": -15,
+      "people operations": -30,
+      "product management": -25,
+      "product manager": -25,
+      "payment": -20,
+      "it support": -30,
+      "sap": -30,
+      "finance": -20,
+      "accountant": -30,
+      "legal": -20,
+      "executive assistant": -30,
+      "tutor": -40,
+      "teacher": -20,
+      "esl": -30,
+      "real estate": -30,
+      "wedding": -20,
+      "runner": -20,
+      "utility": -15,
+      "skycam": -30,
+      "nurse": -40,
+      "warehouse": -40,
+      "driver": -15,
+      "ugc creator": -15,
+      "tiktok creator": -10,
+      "lighting": -15,
+      "audio engineer": -15,
+      "procurement": -40,
+      "purchasing": -40,
+      "supply chain": -40,
+      "logistics": -30,
+      "accounting": -30,
+      "human resources": -30,
+      "recruiter": -30,
+      "merchandiser": -30,
+      "buyer": -20,
+      "compliance": -25
+    }
+  },
+  "regions": {
+    "_comment": "Used to tag each job with a region for the location filter. First match wins, checked top to bottom.",
+    "China (Mainland)": [
+      "china",
+      "beijing",
+      "shanghai",
+      "shenzhen",
+      "guangzhou",
+      "chengdu",
+      "hangzhou",
+      "wuhan",
+      "xi'an",
+      "nanjing",
+      "中国",
+      "北京",
+      "上海"
+    ],
+    "Hong Kong / Taiwan / Macau": [
+      "hong kong",
+      "taiwan",
+      "taipei",
+      "macau"
+    ],
+    "Asia (other)": [
+      "singapore",
+      "japan",
+      "tokyo",
+      "korea",
+      "seoul",
+      "india",
+      "nepal",
+      "kathmandu",
+      "thailand",
+      "bangkok",
+      "vietnam",
+      "indonesia",
+      "malaysia",
+      "philippines",
+      "asia",
+      "apac"
+    ],
+    "United States": [
+      " us ",
+      ", ca",
+      ", dc",
+      ", il",
+      ", ny",
+      ", us",
+      "alabama",
+      "alaska",
+      "arizona",
+      "arkansas",
+      "atlanta",
+      "austin",
+      "boston",
+      "california",
+      "chicago",
+      "colorado",
+      "connecticut",
+      "dallas",
+      "delaware",
+      "denver",
+      "detroit",
+      "district of columbia",
+      "florida",
+      "georgia",
+      "hawaii",
+      "houston",
+      "idaho",
+      "illinois",
+      "indiana",
+      "iowa",
+      "kansas",
+      "kentucky",
+      "la area",
+      "los angeles",
+      "louisiana",
+      "maine",
+      "maryland",
+      "massachusetts",
+      "miami",
+      "michigan",
+      "minneapolis",
+      "minnesota",
+      "mississippi",
+      "missouri",
+      "montana",
+      "nashville",
+      "nebraska",
+      "nevada",
+      "new hampshire",
+      "new jersey",
+      "new mexico",
+      "new york",
+      "new york city",
+      "north carolina",
+      "north dakota",
+      "nyc",
+      "ohio",
+      "oklahoma",
+      "oregon",
+      "pennsylvania",
+      "philadelphia",
+      "pittsburgh",
+      "portland",
+      "remote, us",
+      "rhode island",
+      "san diego",
+      "san francisco",
+      "seattle",
+      "south carolina",
+      "south dakota",
+      "tennessee",
+      "texas",
+      "united states",
+      "us-",
+      "usa",
+      "utah",
+      "vermont",
+      "virginia",
+      "washington",
+      "west virginia",
+      "wisconsin",
+      "wyoming"
+    ],
+    "Canada": [
+      "british columbia",
+      "calgary",
+      "canada",
+      "montreal",
+      "ontario",
+      "ottawa",
+      "quebec",
+      "toronto",
+      "vancouver"
+    ],
+    "Europe / UK": [
+      "amsterdam",
+      "athens",
+      "austria",
+      "barcelona",
+      "belgium",
+      "berlin",
+      "bristol",
+      "brussels",
+      "budapest",
+      "cologne",
+      "copenhagen",
+      "czech",
+      "denmark",
+      "dublin",
+      "dusseldorf",
+      "düsseldorf",
+      "edinburgh",
+      "england",
+      "europe",
+      "finland",
+      "france",
+      "frankfurt",
+      "geneva",
+      "germany",
+      "glasgow",
+      "greece",
+      "hamburg",
+      "helsinki",
+      "hungary",
+      "ireland",
+      "italy",
+      "köln",
+      "lisbon",
+      "london",
+      "lyon",
+      "madrid",
+      "manchester",
+      "milan",
+      "munich",
+      "münchen",
+      "netherlands",
+      "norway",
+      "oslo",
+      "paris",
+      "poland",
+      "portugal",
+      "prague",
+      "romania",
+      "rome",
+      "rotterdam",
+      "scotland",
+      "spain",
+      "stockholm",
+      "stuttgart",
+      "sweden",
+      "switzerland",
+      "the hague",
+      "uk",
+      "united kingdom",
+      "vienna",
+      "wales",
+      "warsaw",
+      "zurich",
+      "zürich"
+    ],
+    "Middle East / Africa": [
+      "dubai",
+      "uae",
+      "qatar",
+      "doha",
+      "israel",
+      "kenya",
+      "nairobi",
+      "south africa",
+      "nigeria",
+      "egypt",
+      "middle east",
+      "africa"
+    ],
+    "Latin America": [
+      "mexico",
+      "brazil",
+      "argentina",
+      "colombia",
+      "chile",
+      "peru",
+      "latin america"
+    ],
+    "Oceania": [
+      "australia",
+      "sydney",
+      "melbourne",
+      "new zealand"
+    ]
+  },
+  "sources": {
+    "_comment": "Set enabled to false to switch a source off. Adzuna and Jooble need free API keys stored as GitHub secrets (see SETUP.md); they stay off until those exist.",
+    "productionhub": {
+      "enabled": true,
+      "label": "ProductionHUB"
+    },
+    "journalismjobs": {
+      "enabled": true,
+      "label": "JournalismJobs"
+    },
+    "remotive": {
+      "enabled": true,
+      "label": "Remotive"
+    },
+    "remoteok": {
+      "enabled": true,
+      "label": "Remote OK"
+    },
+    "himalayas": {
+      "enabled": true,
+      "label": "Himalayas"
+    },
+    "weworkremotely": {
+      "enabled": true,
+      "label": "We Work Remotely"
+    },
+    "arbeitnow": {
+      "enabled": true,
+      "label": "Arbeitnow (Europe)"
+    },
+    "smartshanghai": {
+      "enabled": true,
+      "label": "SmartShanghai"
+    },
+    "watchlist": {
+      "enabled": true,
+      "label": "Career page",
+      "_comment": "Employers whose own careers site is checked directly. 'ats' is the hiring system they use: greenhouse, lever or ashby. 'slug' is the company id in that system's web address (e.g. boards.greenhouse.io/voxmedia -> voxmedia). Jobs show up labelled 'Career page · <name>'.",
+      "employers": [
+        {
+          "name": "Vox Media",
+          "ats": "greenhouse",
+          "slug": "voxmedia"
+        },
+        {
+          "name": "ProPublica",
+          "ats": "greenhouse",
+          "slug": "propublica"
+        },
+        {
+          "name": "A24",
+          "ats": "greenhouse",
+          "slug": "a24"
+        },
+        {
+          "name": "Semafor",
+          "ats": "greenhouse",
+          "slug": "semafor"
+        },
+        {
+          "name": "Axios",
+          "ats": "greenhouse",
+          "slug": "axios"
+        },
+        {
+          "name": "Business Insider",
+          "ats": "greenhouse",
+          "slug": "insider"
+        }
+      ]
+    },
+    "adzuna": {
+      "enabled": true,
+      "label": "Adzuna",
+      "countries": [
+        "us",
+        "gb",
+        "sg",
+        "ca",
+        "au",
+        "de",
+        "fr",
+        "nl"
+      ]
+    },
+    "jooble": {
+      "enabled": true,
+      "label": "Jooble"
+    }
+  },
+  "jobspy": {
+    "_comment": "JobSpy pulls from the big job sites. 'enabled' is the master switch; each site also has its own switch. Glassdoor and Google often block GitHub's servers, so they may return 0 some runs; the dashboard's Sources tab shows this.",
+    "enabled": true,
+    "sites": {
+      "linkedin": true,
+      "indeed": true,
+      "glassdoor": true,
+      "zip_recruiter": true,
+      "google": true
+    },
+    "hours_old": 72,
+    "results_per_search": 25,
+    "search_terms": [
+      "documentary producer",
+      "documentary director",
+      "documentary cinematographer",
+      "documentary editor",
+      "field producer",
+      "fixer China",
+      "Mandarin video producer",
+      "Mandarin speaking producer",
+      "Chinese speaking videographer",
+      "video journalist China"
+    ],
+    "_searches_comment": "Where to search. 'sites' limits a search to certain sites (ZipRecruiter only covers US/Canada; Glassdoor and Indeed need 'country'). Google uses its own query built from each search term plus 'google_suffix'.",
+    "searches": [
+      {
+        "sites": [
+          "linkedin"
+        ],
+        "location": "Worldwide"
+      },
+      {
+        "sites": [
+          "linkedin"
+        ],
+        "location": "China"
+      },
+      {
+        "sites": [
+          "linkedin"
+        ],
+        "location": "Hong Kong"
+      },
+      {
+        "sites": [
+          "indeed",
+          "glassdoor",
+          "zip_recruiter"
+        ],
+        "location": "United States",
+        "country": "usa"
+      },
+      {
+        "sites": [
+          "indeed",
+          "glassdoor"
+        ],
+        "location": "United Kingdom",
+        "country": "uk"
+      },
+      {
+        "sites": [
+          "indeed"
+        ],
+        "location": "Hong Kong",
+        "country": "hong kong"
+      },
+      {
+        "sites": [
+          "indeed"
+        ],
+        "location": "Singapore",
+        "country": "singapore"
+      },
+      {
+        "sites": [
+          "google"
+        ],
+        "google_suffix": "jobs posted in the last 3 days"
+      }
+    ]
+  },
+  "filters": {
+    "_comment": "Controls what the dashboard shows. Add/remove options freely; 'field' must be a job field produced by the fetcher.",
+    "sort": {
+      "label": "Sort by",
+      "default": "fit",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Best fit"
+        },
+        {
+          "value": "recent",
+          "label": "Most recent"
+        }
+      ]
+    },
+    "status": {
+      "label": "My status",
+      "default": "active",
+      "options": [
+        {
+          "value": "active",
+          "label": "All except dismissed"
+        },
+        {
+          "value": "unmarked",
+          "label": "Not yet marked"
+        },
+        {
+          "value": "saved",
+          "label": "Saved"
+        },
+        {
+          "value": "applied",
+          "label": "Applied"
+        },
+        {
+          "value": "dismissed",
+          "label": "Dismissed"
+        },
+        {
+          "value": "all",
+          "label": "Everything"
+        }
+      ]
+    },
+    "date_posted": {
+      "label": "Date posted",
+      "default": "any",
+      "options": [
+        {
+          "value": "any",
+          "label": "Any time"
+        },
+        {
+          "value": "30",
+          "label": "Past month"
+        },
+        {
+          "value": "7",
+          "label": "Past week"
+        },
+        {
+          "value": "1",
+          "label": "Past 24 hours"
+        }
+      ]
+    },
+    "multi": [
+      {
+        "key": "workplace",
+        "field": "workplace_type",
+        "label": "Workplace type",
+        "options": [
+          "On-site",
+          "Hybrid",
+          "Remote",
+          "Not specified"
+        ]
+      },
+      {
+        "key": "employment",
+        "field": "employment_type",
+        "label": "Employment type",
+        "options": [
+          "Full-time",
+          "Part-time",
+          "Contract",
+          "Internship",
+          "Not specified"
+        ]
+      },
+      {
+        "key": "region",
+        "field": "region",
+        "label": "Location",
+        "options": [
+          "Remote / Anywhere",
+          "China (Mainland)",
+          "Hong Kong / Taiwan / Macau",
+          "Asia (other)",
+          "United States",
+          "Canada",
+          "Europe / UK",
+          "Middle East / Africa",
+          "Latin America",
+          "Oceania",
+          "Other / Unknown"
+        ]
+      },
+      {
+        "key": "source",
+        "field": "source",
+        "label": "Source",
+        "options": "auto"
+      }
+    ],
+    "location_text": {
+      "label": "City / country contains",
+      "placeholder": "e.g. Beijing, London"
+    }
+  },
+  "quick_links": {
+    "_comment": "Boards that block automated reading or need a login. Shown as one-click links on the dashboard.",
+    "Film & TV crew boards": [
+      {
+        "label": "Mandy (crew jobs)",
+        "url": "https://www.mandy.com/jobs"
+      },
+      {
+        "label": "Staff Me Up",
+        "url": "https://app.staffmeup.com/jobs"
+      },
+      {
+        "label": "ProductionHUB (full board)",
+        "url": "https://www.productionhub.com/jobs"
+      },
+      {
+        "label": "Shooting People (UK)",
+        "url": "https://shootingpeople.org"
+      },
+      {
+        "label": "IDA member job board",
+        "url": "https://www.documentary.org/membership/jobboard"
+      },
+      {
+        "label": "Doc Society",
+        "url": "https://docsociety.org"
+      }
+    ],
+    "Journalism & media": [
+      {
+        "label": "GIJN jobs",
+        "url": "https://gijn.org/jobs/"
+      },
+      {
+        "label": "Current (public media) jobs",
+        "url": "https://current.org/jobs/"
+      },
+      {
+        "label": "Mediabistro",
+        "url": "https://www.mediabistro.com/jobs/search/?q=documentary"
+      },
+      {
+        "label": "IJNet opportunities (grants, fellowships)",
+        "url": "https://ijnet.org/en/opportunities"
+      },
+      {
+        "label": "FCCC (Foreign Correspondents' Club of China)",
+        "url": "https://www.fccchina.org"
+      }
+    ],
+    "China-side platforms": [
+      {
+        "label": "BOSS直聘 · 纪录片",
+        "url": "https://www.zhipin.com/web/geek/job?query=%E7%BA%AA%E5%BD%95%E7%89%87"
+      },
+      {
+        "label": "猎聘 · 纪录片导演",
+        "url": "https://www.liepin.com/zhaopin/?key=%E7%BA%AA%E5%BD%95%E7%89%87%E5%AF%BC%E6%BC%94"
+      },
+      {
+        "label": "拉勾 · 视频制片",
+        "url": "https://www.lagou.com/wn/zhaopin?kd=%E8%A7%86%E9%A2%91%E5%88%B6%E7%89%87"
+      },
+      {
+        "label": "SmartShanghai jobs",
+        "url": "https://www.smartshanghai.com/jobs/"
+      },
+      {
+        "label": "eChinaCities jobs",
+        "url": "https://jobs.echinacities.com"
+      }
+    ],
+    "Be findable (fixer directories & profiles)": [
+      {
+        "label": "World Fixer directory",
+        "url": "https://www.worldfixer.com"
+      },
+      {
+        "label": "Mandy crew profile",
+        "url": "https://www.mandy.com"
+      },
+      {
+        "label": "ProductionHUB profile",
+        "url": "https://www.productionhub.com"
+      },
+      {
+        "label": "Upwork (remote edit / translation)",
+        "url": "https://www.upwork.com/nx/search/jobs/?q=documentary%20mandarin"
+      }
+    ]
+  }
+}
