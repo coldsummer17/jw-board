@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sources import SOURCES, SkipSource, run_jobspy, JOBSPY_LABELS  # noqa: E402
 from util import (  # noqa: E402
     clean_text, decrypt_json, encrypt_json, fit_score, infer_employment, infer_region,
-    infer_workplace, iso, job_id, now_utc, parse_date,
+    infer_workplace, iso, job_id, now_utc, parse_date, term_in,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -89,7 +89,18 @@ def normalize(raw: Dict[str, Any], default_source: str, cfg: Dict[str, Any], run
     }
 
 
-def is_relevant(job: Dict[str, Any], min_fit: int) -> bool:
+def is_excluded(job: Dict[str, Any], cfg: Dict[str, Any]) -> bool:
+    """Jobs you never want to see, e.g. internships (config: exclude_employment_types, exclude_title_terms)."""
+    if job.get("employment_type") in cfg.get("exclude_employment_types", []):
+        return True
+    title = job.get("title", "").lower()
+    return any(term_in(t, title) for t in cfg.get("exclude_title_terms", []))
+
+
+def is_relevant(job: Dict[str, Any], cfg: Dict[str, Any]) -> bool:
+    if is_excluded(job, cfg):
+        return False
+    min_fit = cfg["min_fit_score"]
     f = job["_fit"]
     if not f["media"]:
         return False  # no film/video/journalism context at all
@@ -105,7 +116,7 @@ def rescore_stored(job: Dict[str, Any], cfg: Dict[str, Any]) -> bool:
     job["region"] = infer_region(job.get("location", ""), job.get("workplace_type", ""), cfg["regions"])
     if not job.get("location") and job["region"] == "Other / Unknown":
         job["region"] = infer_region(f"{job['title']} {job.get('snippet', '')[:400]}", "", cfg["regions"])
-    keep = is_relevant(job, cfg["min_fit_score"])
+    keep = is_relevant(job, cfg)
     job.pop("_fit", None)
     return keep
 
@@ -144,7 +155,7 @@ def main() -> int:
         try:
             raws = SOURCES[key](scfg, ctx)
             jobs = [j for j in (normalize(r, label, cfg, run_ts) for r in raws) if j]
-            kept = [j for j in jobs if is_relevant(j, cfg["min_fit_score"])]
+            kept = [j for j in jobs if is_relevant(j, cfg)]
             collected.extend(kept)
             st = {"source": label, "state": "ok", "fetched": len(jobs), "kept": len(kept)}
             if ctx["warnings"]:
@@ -166,7 +177,7 @@ def main() -> int:
             for site, r in res.items():
                 label = JOBSPY_LABELS.get(site, site)
                 jobs = [j for j in (normalize(x, label, cfg, run_ts) for x in r["jobs"]) if j]
-                kept = [j for j in jobs if is_relevant(j, cfg["min_fit_score"])]
+                kept = [j for j in jobs if is_relevant(j, cfg)]
                 collected.extend(kept)
                 if r["calls"] and r["failed_calls"] == r["calls"]:
                     state = "error"

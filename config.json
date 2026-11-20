@@ -2,6 +2,18 @@
   "_comment": "Main settings for the Documentary Job Workstation. Edit this file to change keywords, sources, scoring and filters. After editing, commit/push to GitHub; the next scheduled run uses the new settings.",
   "keep_days": 60,
   "min_fit_score": 20,
+  "_exclude_comment": "Jobs matching these are never shown. Remove 'Internship' / the intern words to see internships again.",
+  "exclude_employment_types": [
+    "Internship"
+  ],
+  "exclude_title_terms": [
+    "intern",
+    "interns",
+    "internship",
+    "internships",
+    "实习",
+    "实习生"
+  ],
   "scoring": {
     "_comment": "How each job's fit score (0-100) is computed. Each matched term adds its weight; a match in the job title counts double. A job is kept only if its TITLE contains a role word ('role_terms') and the posting has media context ('media_terms' anywhere, or 'video' in the title). 'generic_roles' (producer, director, editor...) need a higher score to qualify. Changes here also re-score jobs already stored.",
     "role_terms": {
@@ -46,7 +58,8 @@
       "摄影": 15,
       "剪辑": 15,
       "外拍": 25,
-      "拍摄": 15
+      "拍摄": 15,
+      "photojournalist": 14
     },
     "generic_roles": [
       "producer",
@@ -460,6 +473,12 @@
       "enabled": true,
       "label": "SmartShanghai"
     },
+    "entertainmentcareers": {
+      "enabled": true,
+      "label": "EntertainmentCareers",
+      "days": 4,
+      "max_job_pages": 60
+    },
     "watchlist": {
       "enabled": true,
       "label": "Career page",
@@ -687,7 +706,6 @@
           "Full-time",
           "Part-time",
           "Contract",
-          "Internship",
           "Not specified"
         ]
       },
@@ -725,8 +743,12 @@
     "_comment": "Boards that block automated reading or need a login. Shown as one-click links on the dashboard.",
     "Film & TV crew boards": [
       {
-        "label": "Mandy (crew jobs)",
+        "label": "Mandy (crew jobs; blocks automated reading)",
         "url": "https://www.mandy.com/jobs"
+      },
+      {
+        "label": "EntertainmentCareers (full board)",
+        "url": "https://www.entertainmentcareers.net/"
       },
       {
         "label": "Staff Me Up",
@@ -809,6 +831,12 @@
       {
         "label": "Upwork (remote edit / translation)",
         "url": "https://www.upwork.com/nx/search/jobs/?q=documentary%20mandarin"
+      }
+    ],
+    "Career services": [
+      {
+        "label": "Handshake (sign in with your school account)",
+        "url": "https://app.joinhandshake.com/"
       }
     ]
   }

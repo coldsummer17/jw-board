@@ -7,6 +7,7 @@ registering it in SOURCES at the bottom (the key must match config.json -> sourc
 """
 from __future__ import annotations
 
+import json
 import os
 import re
 import time
@@ -212,6 +213,87 @@ def smartshanghai(cfg: Dict, ctx: Dict) -> List[Job]:
     return out
 
 
+# EntertainmentCareers: its robots.txt blocks search pages, so we read the public
+# "new jobs" sitemap (500 latest postings), pre-select by words in each job's web
+# address, then open only those job pages and read their structured JobPosting data.
+EC_SLUG_WORDS = (
+    "producer", "video", "editor", "documentar", "docu", "camera", "cinemat", "photograph", "director-of-photography",
+    "shooter", "multimedia", "journalist", "post-production", "film", "fixer", "china", "chinese", "mandarin",
+    "asia", "apac", "correspondent", "story", "content-creator", "production-coordinator", "production-manager",
+)
+
+
+def entertainmentcareers(cfg: Dict, ctx: Dict) -> List[Job]:
+    days = int(cfg.get("days", 4))
+    max_pages = int(cfg.get("max_job_pages", 60))
+    words = tuple(cfg.get("slug_words", EC_SLUG_WORDS))
+    r = get("https://www.entertainmentcareers.net/sitemaps/job_sitemap_newjobs.asp")
+    root = ET.fromstring(r.content)
+    ns = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+    cutoff = now_utc() - timedelta(days=days)
+    candidates = []
+    for u in root.iter(f"{ns}url"):
+        loc = (u.findtext(f"{ns}loc") or "").strip()
+        lastmod = parse_date(u.findtext(f"{ns}lastmod"))
+        m = re.search(r"entertainmentcareers\.net/([^/]+)/([^/]+)/job/(\d+)", loc)
+        if not m or (lastmod and lastmod < cutoff):
+            continue
+        slug = m.group(2).lower()
+        if any(w in slug for w in words):
+            candidates.append(loc)
+    out = []
+    for loc in candidates[:max_pages]:
+        try:
+            posting = _jsonld_jobposting(get(loc).text)
+        except Exception:
+            posting = None
+        time.sleep(1)
+        if not posting:
+            continue
+        out.append(_from_jsonld(posting, loc))
+    if len(candidates) > max_pages:
+        ctx.setdefault("warnings", []).append(f"{len(candidates)} possible matches, opened the newest {max_pages}")
+    return out
+
+
+def _jsonld_jobposting(html_text: str):
+    for block in re.findall(r'<script[^>]*application/ld\+json[^>]*>(.*?)</script>', html_text, re.S | re.I):
+        try:
+            data = json.loads(block.strip())
+        except ValueError:
+            continue
+        for d in (data if isinstance(data, list) else data.get("@graph", [data]) if isinstance(data, dict) else []):
+            if isinstance(d, dict) and d.get("@type") == "JobPosting":
+                return d
+    return None
+
+
+def _from_jsonld(d: Dict[str, Any], url: str) -> Job:
+    locs = d.get("jobLocation") or []
+    if isinstance(locs, dict):
+        locs = [locs]
+    places = []
+    for p in locs:
+        a = (p or {}).get("address") or {}
+        if isinstance(a, dict):
+            places.append(", ".join(x for x in (a.get("addressLocality"), a.get("addressRegion"), a.get("addressCountry")) if x and isinstance(x, str)))
+    remote = str(d.get("jobLocationType", "")).upper() == "TELECOMMUTE"
+    org = d.get("hiringOrganization") or {}
+    salary = ""
+    bs = (d.get("baseSalary") or {}).get("value") if isinstance(d.get("baseSalary"), dict) else None
+    if isinstance(bs, dict) and (bs.get("minValue") or bs.get("value")):
+        lo, hi = bs.get("minValue") or bs.get("value"), bs.get("maxValue")
+        salary = f"{d['baseSalary'].get('currency', '')} {lo}{'–' + str(hi) if hi else ''} / {str(bs.get('unitText', '')).lower()}".strip()
+    return {
+        "title": d.get("title"), "company": org.get("name", "") if isinstance(org, dict) else str(org),
+        "location": "; ".join(p for p in places if p) or ("Remote" if remote else ""),
+        "url": d.get("url") or url, "posted_at": parse_date(d.get("datePosted")),
+        "employment": d.get("employmentType"), "is_remote": remote or None,
+        "workplace": "Remote" if remote else None,
+        "description": d.get("description", ""), "salary": salary,
+    }
+
+
 # ------------------------------------------------------------------ employer watchlist
 
 def watchlist(cfg: Dict, ctx: Dict) -> List[Job]:
@@ -395,6 +477,7 @@ SOURCES: Dict[str, Callable[[Dict, Dict], List[Job]]] = {
     "weworkremotely": weworkremotely,
     "arbeitnow": arbeitnow,
     "smartshanghai": smartshanghai,
+    "entertainmentcareers": entertainmentcareers,
     "watchlist": watchlist,
     "adzuna": adzuna,
     "jooble": jooble,
